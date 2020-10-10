@@ -8,7 +8,6 @@ const GenericInput = ({ error, isFocused, ...restProps }) => (
       {...restProps}
       style={error && isFocused ? { background: "red" } : {}}
     />
-    {console.log(error, isFocused, restProps )}
     {error && isFocused && <label htmlFor="input">some error message</label>}
   </>
 );
@@ -18,12 +17,14 @@ export default class AddTodo extends Component {
     value: '',
     isFocused: false
   }
-  onSubmitHandler(event, inputHook) {
+
+  onSubmitHandler(event, inputProps) {
+    console.log(event)
     return () => {
       event.preventDefault();
-      if (inputHook.value().trim()) {
-        this.props.onCreateMethod(inputHook.value());
-        inputHook.clear();
+      if (inputProps.value().trim()) {
+        this.props.onCreateMethod(inputProps.value());
+        inputProps.clear();
       }
     }
   }
@@ -39,8 +40,8 @@ export default class AddTodo extends Component {
         error,
         isFocused: isFocused,
         onChange: (event) => this.setState({ value: event.target.value }),
-        onFocus: () => this.setState({ isFocused: true }), // focus
-        onBlur: () => this.setState({ isFocused: false }), // unfocus
+        onFocus: () => this.setState({ isFocused: true }),
+        onBlur: () => this.setState({ isFocused: false }),
       },
       clear: () => this.setState({ value: '' }),
       value: () => value,
@@ -48,7 +49,7 @@ export default class AddTodo extends Component {
   }
   render() {
     return (
-      <form style={{ marginBottom: "1rem" }} onSubmit={this.onSubmitHandler(this.inputProps)}>
+      <form style={{ marginBottom: "1rem" }} onSubmit={(event) => this.onSubmitHandler(event, this.inputProps)}>
         <GenericInput {...this.inputProps.bind} />
         <button type="submit"> Add todo </button>{" "}
       </form>

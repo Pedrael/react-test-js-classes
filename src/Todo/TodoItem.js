@@ -8,16 +8,16 @@ export default class Todo extends Component {
   constructor(props) {
     super(props)
     console.log('constructor');
-    //this.onClickHandler = this.onClickHandler.bind(this);//привязали функцию к контексту класса =
+    //this.removeTodoHandler = this.removeTodoHandler.bind(this);//привязали функцию к контексту класса =
   }
 
-  /*onClickHandler() {
+  /*removeTodoHandler() {
     const { removeTodoMethod } = this.context
     const { todo } = this.props
     removeTodoMethod(todo.id)
   }*/
 
-  onClickHandler = () => {
+  removeTodoHandler = () => {
     const { removeTodoMethod } = this.context
     const { todo } = this.props
     removeTodoMethod(todo.id)
@@ -25,13 +25,13 @@ export default class Todo extends Component {
 
   render() {
     const { todo } = this.props;
+    const {toggleTodo} = this.context
 
     const classes = []
   
     if (todo.completed) {
       classes.push('done')
     }
-    //checked={todo.completed} если начальные значения комплитед не все фоллс, чтоб отображалось с самого начала как выполненное
     
     const styles = {
       li: {
@@ -47,6 +47,7 @@ export default class Todo extends Component {
         marginRight: '1rem'
       }
     }
+
     return (
       <Fragment>
         <li style={styles.li}>
@@ -55,7 +56,7 @@ export default class Todo extends Component {
             <input
               checked={this.props.todo.completed}
               type="checkbox"
-              onChange={() => this.props.onChangeMethod(this.props.todo.id)}
+              onChange={toggleTodo(todo.id, !todo.complete)}
             />
             <strong>{this.props.index + 1}</strong>
             &nbsp;
@@ -63,7 +64,7 @@ export default class Todo extends Component {
           </span>
 
 
-          <button className='rm' onClick={this.onClickHandler}>&times;</button>
+          <button className='rm' onClick={this.removeTodoHandler}>&times;</button>
         </li>
       </Fragment>
     )

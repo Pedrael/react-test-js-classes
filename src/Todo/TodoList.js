@@ -28,7 +28,6 @@ export default class TodoListClass extends Component {
                 todo={todo}
                 key={todo.id}
                 index={index}
-                onChangeMethod={this.props.onToggleMethod}
               />
             );
           })}
