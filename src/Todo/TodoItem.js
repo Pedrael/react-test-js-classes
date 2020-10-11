@@ -7,7 +7,7 @@ export default class Todo extends Component {
 
   constructor(props) {
     super(props)
-    console.log('constructor');
+    let useless = ''
     //this.removeTodoHandler = this.removeTodoHandler.bind(this);//привязали функцию к контексту класса =
   }
 
@@ -32,7 +32,7 @@ export default class Todo extends Component {
     if (todo.completed) {
       classes.push('done')
     }
-    
+
     const styles = {
       li: {
         display: 'flex',
@@ -52,11 +52,10 @@ export default class Todo extends Component {
       <Fragment>
         <li style={styles.li}>
           <span className={classes.join(' ')}>
-            {}
             <input
               checked={this.props.todo.completed}
               type="checkbox"
-              onChange={toggleTodo(todo.id, !todo.complete)}
+              onChange={toggleTodo(todo.id, !todo.completed)}
             />
             <strong>{this.props.index + 1}</strong>
             &nbsp;

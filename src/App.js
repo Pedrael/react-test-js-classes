@@ -5,68 +5,6 @@ import Context from "./context";
 import AddTodo from "./Todo/AddTodo";
 import Loader from "./Loader";
 import Modal from "./Modal/Modal";
-/*
-function App() {
-  const [todos, setTodos] = useState([]);
-  const loading = todos.length === 0
-
-  useEffect(() => {
-    fetch("https://jsonplaceholder.typicode.com/todos?_limit=5")
-      .then((response) => response.json())
-      .then((todosServer) => {
-        setTimeout(() => {
-          setTodos(todosServer);
-        }, 2000);
-      })
-  }, []);
-
-  function toggleTodo(id) {
-    setTodos(
-      todos.map((todo) => {
-        if (todo.id === id) {
-          todo.completed = !todo.completed;
-        }
-        return todo;
-      })
-    );
-  }
-
-  function removeTodo(id) {
-    setTodos(todos.filter((todo) => todo.id !== id));
-  }
-
-  //контекст виден вниз по дереву, начиная с компонента, в котором определен провайдер (но не виден вверх)
-  //
-
-  function addTodoMethod(title) { //при изменении состояния перерендер
-    setTodos( //меняем общий массив тудушек
-      todos.concat([ //конкатинируя массиву тудушек новое туду
-        {
-          title,
-          id: Date.now(),
-          completed: false,
-        },
-      ])
-    )
-  }
-
-  return (
-    <Context.Provider value={{ removeTodoMethod: removeTodo }}>
-      <div className="wrapper">
-        <h1> React tutorial </h1> <Modal />
-        <AddTodo onCreateMethod={addTodoMethod} /> {loading && <Loader />}{" "}
-        {todos.length ? (
-          <TodoList todos={todos} onToggleMethod={toggleTodo} />
-        ) : loading ? null : (
-          <p> No todos! </p>
-        )}{" "}
-      </div>{" "}
-    </Context.Provider>
-  );
-}
-
-export default App;*/
-
 //деструктуризировать
 export default class App extends Component {
 
@@ -117,11 +55,12 @@ export default class App extends Component {
         }, 2000)
       })
   }
-  //что такое чистая функция
+  //что такое чистая функция - функция, исход которой функционально не зависит от внешних параметров
 
   toggleTodo = (id, isComplete) => () => {
     this.setState((state) => {
       const { activeUserObject: {user, todos} } = state;
+      console.log(`isComplete: ${isComplete}`);
 
       return {
         activeUserObject: {
@@ -139,9 +78,13 @@ export default class App extends Component {
   
 
   removeTodo = (id) => {
-    this.setState((state) => ({
-      todos: state.activeUserObject.todos.filter((todo) => todo.id !== id)
-    }))
+    this.setState((state) => {
+    return {
+      activeUserObject: {
+        user: state.activeUserObject.user,
+        todos: state.activeUserObject.todos.filter((todo) => todo.id !== id)
+      }
+    }})
   }
 
   addTodoMethod = (title) => {
@@ -158,6 +101,31 @@ export default class App extends Component {
     }))
   };
 
+
+
+  render() {
+    return (
+      <Fragment>
+        <Context.Provider value={{ removeTodoMethod: this.removeTodo, toggleTodo: this.toggleTodo }}>
+          <div className="wrapper">
+            <h1> React tutorial </h1> <Modal />
+            <AddTodo onCreateMethod={this.addTodoMethod} />{" "}
+            {this.state.activeUserObject.todos.length ? (
+              <TodoList
+                todos={this.state.activeUserObject.todos}
+              />
+            ) : (
+              <p> No todos! </p>
+            )}{" "}
+          </div>{" "}
+        </Context.Provider>
+      </Fragment>
+    )
+  }
+}
+
+
+/*
   render() {
     const loading = this.state.todos.length === 0;
     return (
@@ -180,3 +148,4 @@ export default class App extends Component {
     )
   }
 }
+*/
