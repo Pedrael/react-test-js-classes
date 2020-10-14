@@ -5,6 +5,7 @@ import Context from "./context";
 import AddTodo from "./Todo/AddTodo";
 import Loader from "./Loader";
 import Modal from "./Modal/Modal";
+
 //деструктуризировать
 export default class App extends Component {
 
@@ -13,8 +14,8 @@ export default class App extends Component {
     this.state = {//когда есть конструктор лучше определять стейт в нем
       todos: [],
       usersTodo: [],
-      activeUser: 'pupkin 10',
-      activeUserIndex: 0,
+      activeUser: '',
+      //activeUserIndex: 0,
       activeUserObject: {
         user: '',
         todos: [],
@@ -38,13 +39,14 @@ export default class App extends Component {
             usersTodo: usersTodoBuffer
           }))
 
-          this.setState((state) => ({
+          /*this.setState((state) => ({
             activeUserIndex: state.usersTodo.findIndex((userTodo) => userTodo.user === state.activeUser)
-          }))
-
-          this.setState((state) => ({
-            activeUserObject: state.usersTodo.find((userTodo) => userTodo.user === state.activeUser)
-          }))
+          }))*/
+          if (this.state.activeUser !== '') {
+            this.setState((state) => ({
+              activeUserObject: state.usersTodo.find((userTodo) => userTodo.user === state.activeUser)
+            })) 
+          }
           console.log(this.state.activeUserObject);
           console.log(this.state.activeUserObject.todos);
           console.log(this.state.usersTodo);
@@ -55,6 +57,7 @@ export default class App extends Component {
         }, 2000)
       })
   }
+
   //что такое чистая функция - функция, исход которой функционально не зависит от внешних параметров
 
   toggleTodo = (id, isComplete) => () => {
@@ -67,7 +70,7 @@ export default class App extends Component {
           user,
           todos: todos.map((todo) => {
             if (todo.id === id) {
-              todo.completed = isComplete; // в девмоде сестейты вызываются 2 раза, поэтому когда здесь происходило инвертирование, оно происходило взаимоисключаще, поэтому нужно передавать статичное состояние, которое мы присвоим целевому полю
+              todo.completed = isComplete; // в девмоде сестейты вызываются 2 раза, поэтому когда здесь происходило инвертирование, оно происходило взаимоисключаще, поэтому нужно передавать статичное состояние, которое мы присвоим целевому полю. Чистые функции не изменяют ничего функционально, они могут только вернуть или присвоить одно значение другому
             } 
             return todo;
           }),
@@ -90,23 +93,43 @@ export default class App extends Component {
   addTodoMethod = (title) => {
     //при изменении состояния перерендер
     this.setState((state) => ({
-      todos: state.activeUserObject.todos.concat([
-        //конкатинируя массиву тудушек новое туду
-        {
-          title,
-          id: Date.now(),
-          completed: false,
-        }
-      ])
+      activeUserObject: {
+        user: state.activeUserObject.user,
+        todos: state.activeUserObject.todos.concat([
+          //конкатинируя массиву тудушек новое туду
+          {
+            title,
+            id: Date.now(),
+            completed: false,
+          }
+        ])
+      }
     }))
   };
+
+  changeUser = (event) => {
+    console.log(this.state.activeUser);
+    console.log(event.target.value);
+    this.setState(({
+      activeUser: event.target.value
+    }))
+    this.setState((state) => ({
+      activeUserObject: state.usersTodo.find((userTodo) => userTodo.user === state.activeUser)
+    }))
+  }
 
 
 
   render() {
+    let user = '';
     return (
       <Fragment>
-        <Context.Provider value={{ removeTodoMethod: this.removeTodo, toggleTodo: this.toggleTodo }}>
+        <select value={this.state.activeUser} onChange={this.changeUser}>
+        {this.state.usersTodo.map((userTodo, index) => {
+          return (<option value={userTodo.user} key={index}>{userTodo.user}</option>)
+        })}
+        </select>
+        {this.state.activeUser !== '' ? <Context.Provider value={{ removeTodoMethod: this.removeTodo, toggleTodo: this.toggleTodo }}>
           <div className="wrapper">
             <h1> React tutorial </h1> <Modal />
             <AddTodo onCreateMethod={this.addTodoMethod} />{" "}
@@ -118,7 +141,9 @@ export default class App extends Component {
               <p> No todos! </p>
             )}{" "}
           </div>{" "}
-        </Context.Provider>
+        </Context.Provider> : ((
+              <p> No todos! </p>
+            ))}
       </Fragment>
     )
   }

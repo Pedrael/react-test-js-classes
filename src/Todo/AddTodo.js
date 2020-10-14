@@ -19,13 +19,13 @@ export default class AddTodo extends Component {
   }
 
   onSubmitHandler(event, inputProps) {
-    console.log(event)
-    return () => {
-      event.preventDefault();
-      if (inputProps.value().trim()) {
-        this.props.onCreateMethod(inputProps.value());
-        inputProps.clear();
-      }
+    event.preventDefault();
+    console.log(`event = ${event.target.value}`)
+    console.log(`inputProps = ${inputProps.value()}`);
+    if (inputProps.value().trim()) {
+      console.log(inputProps.value());
+      this.props.onCreateMethod(inputProps.value());
+      inputProps.clear();
     }
   }
   //this.state = {date: new Date()}; начальное состояние дейта в стейте

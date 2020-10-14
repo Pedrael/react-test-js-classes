@@ -1,13 +1,13 @@
-import React, { Component, Fragment, useContext } from "react"
-import PropTypes from 'prop-types'
-import Context from '../context';
+import React, { Component, Fragment, useContext } from "react";
+import PropTypes from "prop-types";
+import Context from "../context";
 
 export default class Todo extends Component {
-  static contextType = Context
+  static contextType = Context;
 
   constructor(props) {
-    super(props)
-    let useless = ''
+    super(props);
+    let useless = "";
     //this.removeTodoHandler = this.removeTodoHandler.bind(this);//привязали функцию к контексту класса =
   }
 
@@ -18,40 +18,40 @@ export default class Todo extends Component {
   }*/
 
   removeTodoHandler = () => {
-    const { removeTodoMethod } = this.context
-    const { todo } = this.props
-    removeTodoMethod(todo.id)
-  }
+    const { removeTodoMethod } = this.context;
+    const { todo } = this.props;
+    removeTodoMethod(todo.id);
+  };
 
   render() {
     const { todo } = this.props;
-    const {toggleTodo} = this.context
+    const { toggleTodo } = this.context;
 
-    const classes = []
-  
+    const classes = [];
+
     if (todo.completed) {
-      classes.push('done')
+      classes.push("done");
     }
 
     const styles = {
       li: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '.5rem 1rem',
-        border: '1px solid #ccc',
-        borderRadius: '4px',
-        marginBottom: '.5rem'
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        padding: ".5rem 1rem",
+        border: "1px solid #ccc",
+        borderRadius: "4px",
+        marginBottom: ".5rem",
       },
       input: {
-        marginRight: '1rem'
-      }
-    }
+        marginRight: "1rem",
+      },
+    };
 
     return (
       <Fragment>
         <li style={styles.li}>
-          <span className={classes.join(' ')}>
+          <span className={classes.join(" ")}>
             <input
               checked={this.props.todo.completed}
               type="checkbox"
@@ -62,10 +62,11 @@ export default class Todo extends Component {
             {this.props.todo.title}
           </span>
 
-
-          <button className='rm' onClick={this.removeTodoHandler}>&times;</button>
+          <button className="rm" onClick={this.removeTodoHandler}>
+            &times;
+          </button>
         </li>
       </Fragment>
-    )
+    );
   }
 }
